@@ -397,6 +397,131 @@
   .hero .cta-group { animation-delay: 0.3s; }
   .hero .hero-note { animation-delay: 0.35s; }
   .mockup-wrap { animation: fadeUp 0.8s 0.4s ease both; }
+
+  /* Floating Widget */
+  .floating-widget {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+  }
+
+  .widget-toggle {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 24px rgba(108,99,255,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .widget-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(108,99,255,0.4);
+  }
+
+  .widget-panel {
+    width: 320px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 1.25rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    opacity: 0;
+    transform: translateY(16px) scale(0.95);
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+  }
+
+  .widget-panel.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .widget-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .widget-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(108,99,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  .widget-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .widget-search {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .widget-search input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+  }
+
+  .widget-search input::placeholder {
+    color: var(--muted);
+  }
+
+  .widget-quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .widget-quick-item {
+    background: rgba(108,99,255,0.1);
+    border: 1px solid rgba(108,99,255,0.2);
+    color: var(--accent2);
+    padding: 0.4rem 0.75rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .widget-quick-item:hover {
+    background: rgba(108,99,255,0.2);
+  }
+
 </style>
 </head>
 <body>
@@ -483,9 +608,9 @@
 
       <div class="features-grid">
         <div class="feat">
-          <div class="feat-icon purple">⌨️</div>
-          <h3>Instant shortcut search</h3>
-          <p>Type anything in plain English — "how do I rename a file", "switch tabs", "undo" — and get the exact shortcut immediately.</p>
+          <div class="feat-icon amber">⌨️</div>
+          <h3>Floating widget</h3>
+          <p>Keyo lives right on your screen — a tiny, expandable floating button that's always ready when you need a shortcut, without interrupting your workflow.</p>
         </div>
         <div class="feat">
           <div class="feat-icon green">🪟</div>
@@ -506,6 +631,11 @@
           <div class="feat-icon green">🤖</div>
           <h3>AI support</h3>
           <p>For unusual questions, Keyo asks AI and brings back a clear, concise answer without leaving the widget.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-icon purple">💬</div>
+          <h3>Instant shortcut search</h3>
+          <p>Type anything in plain English — "how do I rename a file", "switch tabs", "undo" — and get the exact shortcut immediately.</p>
         </div>
       </div>
     </div>
@@ -572,7 +702,8 @@
 
 <footer>
   <div class="container">
-    <p>Keyo — Made for Windows switchers discovering Mac &nbsp;·&nbsp; Free &amp; open source</p>
+    <p>Keyo — Made for Windows switchers discovering Mac</p>
+    <p style="margin-top: 0.5rem;">© 2026 Keyo. All rights reserved.</p>
   </div>
 </footer>
 
