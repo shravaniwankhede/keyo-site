@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keyo — Mac shortcuts for Windows switchers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #f0eff8;
+    --muted: #7a79a0;
+    --accent: #6c63ff;
+    --accent2: #a78bfa;
+    --green: #22d3a0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* glow blobs */
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .blob-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; right: -100px; }
+  .blob-2 { width: 400px; height: 400px; background: var(--green); bottom: 100px; left: -100px; }
+
+  /* layout */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+
+  /* nav */
+  nav {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    z-index: 100;
+  }
+  nav .inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--accent2), var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .nav-dl {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: 100px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .nav-dl:hover { opacity: 0.85; }
+
+  /* hero */
+  .hero {
+    padding: 8rem 0 6rem;
+    text-align: center;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(108,99,255,0.12);
+    border: 1px solid rgba(108,99,255,0.3);
+    color: var(--accent2);
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.35rem 0.9rem;
+    border-radius: 100px;
+    margin-bottom: 2rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .badge::before { content: '⌨️'; font-size: 0.9rem; }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+  h1 .dim { color: var(--muted); }
+  h1 .glow {
+    background: linear-gradient(135deg, #6c63ff, #a78bfa, #22d3a0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-sub {
+    font-size: 1.2rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0 auto 3rem;
+    font-weight: 300;
+  }
+  .hero-sub strong { color: var(--text); font-weight: 500; }
+
+  .cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 0.9rem 2rem;
+    border-radius: 100px;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
+  .btn-primary svg { width: 18px; height: 18px; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border2);
+    padding: 0.9rem 2rem;
+    border-radius: 100px;
+    font-size: 1rem;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+
+  .hero-note {
+    margin-top: 1.25rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .hero-note span { color: var(--green); }
+
+  /* mockup */
+  .mockup-wrap {
+    max-width: 380px;
+    margin: 5rem auto 0;
+    position: relative;
+  }
+  .mockup-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -30px;
+    background: radial-gradient(ellipse at center, rgba(108,99,255,0.2) 0%, transparent 70%);
+    z-index: -1;
+  }
+  .mockup {
+    background: #14141e;
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+  }
+  .mockup-bar {
+    background: #1a1a26;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .mockup-app-badge {
+    margin-left: auto;
+    font-size: 0.7rem;
+    color: var(--muted);
+    background: rgba(255,255,255,0.05);
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+  .mockup-app-badge span { color: var(--green); }
+
+  .mockup-body { padding: 1rem; }
+  .mockup-search {
+    background: #1f1f2e;
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 0.6rem 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+  }
+  .mockup-search svg { width: 16px; height: 16px; color: var(--muted); flex-shrink: 0; }
+  .mockup-search span { font-size: 0.875rem; color: var(--muted); }
+  .mockup-search .mic {
+    margin-left: auto;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(108,99,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .result-card {
+    background: #1a1a28;
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  .result-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+  .result-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; }
+  .keys { display: flex; align-items: center; gap: 6px; margin-bottom: 0.75rem; }
+  .key {
+    background: #252535;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-bottom: 3px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    font-family: monospace;
+    color: var(--text);
+  }
+  .key-sep { color: var(--muted); font-size: 0.75rem; }
+  .result-desc { font-size: 0.8rem; color: var(--muted); }
+
+  .result-card.windows { border-color: rgba(34,211,160,0.2); }
+  .result-card.windows .result-label { color: var(--green); }
+  .result-card.windows .result-title { color: var(--green); }
+  .result-path { font-size: 0.8rem; color: var(--muted); display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .result-path .arr { color: var(--accent2); }
+
+  /* features */
+  .section { padding: 6rem 0; }
+  .section-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent2);
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    line-height: 1.15;
+  }
+  .section-sub { color: var(--muted); font-size: 1.1rem; max-width: 480px; margin-bottom: 3.5rem; }
+
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+  .feat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .feat:hover { border-color: var(--border2); transform: translateY(-3px); }
+  .feat-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  .feat-icon.purple { background: rgba(108,99,255,0.15); }
+  .feat-icon.green { background: rgba(34,211,160,0.12); }
+  .feat-icon.amber { background: rgba(251,191,36,0.12); }
+  .feat-icon.pink { background: rgba(244,114,182,0.12); }
+
+  .feat h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .feat p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+  /* windows section */
+  .windows-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (max-width: 700px) { .windows-section { grid-template-columns: 1fr; gap: 2rem; } }
+
+  .compare-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .compare-row:last-child { border-bottom: none; }
+  .win-side { font-size: 0.875rem; color: var(--muted); flex: 1; }
+  .arr-icon { color: var(--accent2); flex-shrink: 0; }
+  .mac-side { font-size: 0.875rem; color: var(--text); flex: 1; text-align: right; }
+  .mac-side strong { color: var(--green); display: block; font-size: 0.75rem; font-family: monospace; }
+
+  /* download */
+  .download-section {
+    text-align: center;
+    padding: 6rem 0;
+  }
+  .download-card {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 24px;
+    padding: 4rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+  .download-card::before {
+    content: '';
+    position: absolute;
+    top: -80px; left: 50%; transform: translateX(-50%);
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(108,99,255,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .download-card h2 { margin-bottom: 0.75rem; }
+  .download-card p { color: var(--muted); margin-bottom: 2rem; }
+  .sys-req { margin-top: 1.5rem; font-size: 0.8rem; color: var(--muted); }
+  .sys-req span { color: var(--text); }
+
+  /* footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero > * { animation: fadeUp 0.6s ease both; }
+  .hero .badge { animation-delay: 0s; }
+  .hero h1 { animation-delay: 0.1s; }
+  .hero .hero-sub { animation-delay: 0.2s; }
+  .hero .cta-group { animation-delay: 0.3s; }
+  .hero .hero-note { animation-delay: 0.35s; }
+  .mockup-wrap { animation: fadeUp 0.8s 0.4s ease both; }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<nav>
+  <div class="inner">
+    <div class="logo">keyo</div>
+    <a href="#download" class="nav-dl">Download free</a>
+  </div>
+</nav>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="badge">Mac assistant for switchers</div>
+      <h1>
+        <span class="dim">Mac shortcuts,</span><br>
+        <span class="glow">finally explained.</span>
+      </h1>
+      <p class="hero-sub">
+        A tiny floating assistant that lives on your screen. <strong>Search any shortcut</strong>, get the Mac equivalent of any Windows habit, instantly.
+      </p>
+      <div class="cta-group">
+        <a href="#download" class="btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download for Mac
+        </a>
+        <a href="#features" class="btn-ghost">See how it works</a>
+      </div>
+      <p class="hero-note">Free forever &nbsp;·&nbsp; <span>macOS only</span> &nbsp;·&nbsp; No account needed</p>
+
+      <!-- App mockup -->
+      <div class="mockup-wrap">
+        <div class="mockup">
+          <div class="mockup-bar">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+            <div class="mockup-app-badge">Active: <span>VS Code</span></div>
+          </div>
+          <div class="mockup-body">
+            <div class="mockup-search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Search shortcuts…</span>
+
+            </div>
+
+            <div class="result-card">
+              <div class="result-label">Shortcut</div>
+              <div class="result-title">Take a Screenshot</div>
+              <div class="keys">
+                <div class="key">⇧</div><div class="key-sep">+</div>
+                <div class="key">⌘</div><div class="key-sep">+</div>
+                <div class="key">4</div>
+              </div>
+              <div class="result-desc">Select area to capture. Saves to Desktop.</div>
+            </div>
+
+            <div class="result-card windows">
+              <div class="result-label">Mac Equivalent</div>
+              <div class="result-title">Activity Monitor</div>
+              <div class="result-path">
+                <span>⌘ Space</span>
+                <span class="arr">→</span>
+                <span>Activity Monitor</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-label">Features</div>
+      <h2>Everything you need<br>to feel at home on Mac</h2>
+      <p class="section-sub">Keyo floats quietly on your screen, ready when you need it. No more Googling every shortcut.</p>
+
+      <div class="features-grid">
+        <div class="feat">
+          <div class="feat-icon purple">⌨️</div>
+          <h3>Instant shortcut search</h3>
+          <p>Type anything in plain English — "how do I rename a file", "switch tabs", "undo" — and get the exact shortcut immediately.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-icon green">🪟</div>
+          <h3>Windows translator</h3>
+          <p>Ask what you know from Windows. "Task Manager", "Ctrl+Alt+Delete", "File Explorer" — Keyo tells you the Mac way instantly.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-icon pink">🔍</div>
+          <h3>App-aware shortcuts</h3>
+          <p>Keyo detects what app you're using and shows the most relevant shortcuts for Chrome, VS Code, Finder, and more.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-icon purple">✈️</div>
+          <h3>Works offline</h3>
+          <p>The full shortcut database lives on your Mac. No internet needed for common searches — instant results, always.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-icon green">🤖</div>
+          <h3>AI fallback</h3>
+          <p>For unusual questions, Keyo asks AI and brings back a clear, concise answer without leaving the widget.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WINDOWS MODE -->
+  <section class="section">
+    <div class="container">
+      <div class="windows-section">
+        <div>
+          <div class="section-label">Windows → Mac</div>
+          <h2>You already know<br>the concept.</h2>
+          <p style="color: var(--muted); margin-top: 1rem; font-size: 1rem;">
+            Keyo translates your existing knowledge. Every Windows habit has a Mac equivalent — Keyo surfaces it instantly so you're never stuck.
+          </p>
+        </div>
+        <div>
+          <div class="compare-row">
+            <div class="win-side">Ctrl + Alt + Delete</div>
+            <div class="arr-icon">→</div>
+            <div class="mac-side">Force Quit <strong>⌘ + Option + Esc</strong></div>
+          </div>
+          <div class="compare-row">
+            <div class="win-side">File Explorer</div>
+            <div class="arr-icon">→</div>
+            <div class="mac-side">Finder <strong>⌘ + N in Finder</strong></div>
+          </div>
+          <div class="compare-row">
+            <div class="win-side">Task Manager</div>
+            <div class="arr-icon">→</div>
+            <div class="mac-side">Activity Monitor <strong>⌘ Space → type it</strong></div>
+          </div>
+          <div class="compare-row">
+            <div class="win-side">Print Screen</div>
+            <div class="arr-icon">→</div>
+            <div class="mac-side">Screenshot <strong>⇧ + ⌘ + 3 or 4</strong></div>
+          </div>
+          <div class="compare-row">
+            <div class="win-side">Alt + F4</div>
+            <div class="arr-icon">→</div>
+            <div class="mac-side">Quit App <strong>⌘ + Q</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD -->
+  <section class="download-section" id="download">
+    <div class="container">
+      <div class="download-card">
+        <div class="section-label" style="margin-bottom: 1rem;">Free download</div>
+        <h2>Get Keyo for Mac</h2>
+        <p>Drag to Applications. Launch. Done. It floats quietly on your screen until you need it.</p>
+        <a href="YOUR_DMG_LINK_HERE" class="btn-primary" style="display: inline-flex; margin: 0 auto;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Keyo (.dmg)
+        </a>
+        <p class="sys-req">Requires <span>macOS 12+</span> &nbsp;·&nbsp; Apple Silicon &amp; Intel &nbsp;·&nbsp; <span>Free forever</span></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <p>Keyo — Made for Windows switchers discovering Mac &nbsp;·&nbsp; Free &amp; open source</p>
+  </div>
+</footer>
+
+</body>
+</html>
